@@ -1,0 +1,616 @@
+<html lang="pt"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ARM">
+<title>ARM</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f6f3; --surface: #ffffff; --surface2: #f1efe8;
+  --border: rgba(0,0,0,0.09); --border2: rgba(0,0,0,0.17);
+  --text: #1a1a18; --text2: #6b6b67; --text3: #b0b0aa;
+  --radius: 12px; --radius-sm: 8px;
+  --green-bg: #E1F5EE; --green: #0F6E56;
+  --blue-bg: #E6F1FB; --blue: #185FA5;
+  --amber-bg: #FAEEDA; --amber: #854F0B;
+  --purple-bg: #EEEDFE; --purple: #534AB7;
+  --red-bg: #FCEBEB; --red: #A32D2D;
+  --gray-bg: #F1EFE8; --gray: #5F5E5A;
+  --coral-bg: #FAECE7; --coral: #993C1D;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a18; --surface: #232321; --surface2: #2c2c2a;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.14);
+    --text: #f0ede8; --text2: #a0a09a; --text3: #6b6b67;
+    --green-bg: #0d2e22; --blue-bg: #0d1f35; --amber-bg: #2e1f06;
+    --purple-bg: #1a1830; --red-bg: #2e0d0d; --gray-bg: #252523; --coral-bg: #2e1208;
+  }
+}
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: env(safe-area-inset-bottom); }
+.app { max-width: 980px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+/* HEADER */
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px; }
+.header-left { display: flex; align-items: baseline; gap: 8px; }
+h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+.sub { font-size: 12px; color: var(--text2); }
+.header-actions { display: flex; gap: 6px; }
+.btn { padding: 7px 16px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 600; transition: opacity 0.15s; font-family: inherit; letter-spacing: 0.01em; }
+.btn-add { background: var(--text); color: var(--bg); border: none; }
+.btn-export { background: transparent; color: var(--text2); border: 0.5px solid var(--border2); }
+.btn:hover { opacity: 0.72; }
+
+/* DASHBOARD */
+.dashboard { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+.dash-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 0.75rem; }
+.dash-section { margin-bottom: 0.75rem; }
+.dash-section:last-child { margin-bottom: 0; }
+.dash-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; font-weight: 500; }
+.dash-items { display: flex; flex-direction: column; gap: 4px; }
+.dash-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.dash-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dash-name { font-weight: 500; }
+.dash-when { color: var(--text2); font-size: 12px; }
+.dash-empty { font-size: 13px; color: var(--text3); font-style: italic; }
+.dash-divider { height: 0.5px; background: var(--border); margin: 0.75rem 0; }
+
+/* STATS */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1.25rem; }
+.stat { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.65rem 0.9rem; }
+.stat-n { font-size: 20px; font-weight: 700; }
+.stat-l { font-size: 11px; color: var(--text2); margin-top: 1px; }
+
+/* FILTERS */
+.filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.filter-btn { font-size: 12px; padding: 5px 13px; border-radius: 20px; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.filter-btn.active { background: var(--text); color: var(--bg); border-color: transparent; }
+
+/* GRID */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 0.9rem; transition: border-color 0.15s; }
+.card:hover { border-color: var(--border2); }
+.card.archived { opacity: 0.38; }
+.card.has-event { border-left: 3px solid var(--green); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+.card-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.card-meta { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+.card-note { font-size: 11px; color: var(--text2); border-top: 0.5px solid var(--border); padding-top: 7px; margin-top: 7px; line-height: 1.55; }
+.card-event { font-size: 11px; color: var(--green); margin-top: 7px; font-weight: 500; }
+.card-next-text { font-size: 11px; color: var(--blue); margin-top: 5px; }
+.card-actions { display: flex; gap: 5px; margin-top: 8px; border-top: 0.5px solid var(--border); padding-top: 7px; flex-wrap: wrap; }
+.card-btn { font-size: 10px; padding: 3px 9px; border-radius: 5px; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; font-family: inherit; transition: background 0.12s; }
+.card-btn:hover { background: var(--surface2); }
+.card-btn.danger { color: var(--red); border-color: #F7C1C1; }
+.card-btn.danger:hover { background: var(--red-bg); }
+.empty { text-align: center; padding: 3rem; color: var(--text3); font-size: 13px; }
+
+/* MODAL */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.48); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
+.overlay.open { display: flex; }
+.modal { background: var(--surface); border-radius: var(--radius); padding: 1.25rem; width: 100%; max-width: 420px; max-height: 92vh; overflow-y: auto; }
+.modal h2 { font-size: 16px; font-weight: 700; margin-bottom: 1.1rem; }
+.field { margin-bottom: 0.85rem; }
+.field label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 8px 10px; border: 0.5px solid var(--border2);
+  border-radius: var(--radius-sm); background: var(--bg); color: var(--text);
+  font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.15s;
+  -webkit-appearance: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--text); }
+.field textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1rem; }
+.btn-cancel { padding: 7px 14px; border-radius: 8px; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; font-family: inherit; font-size: 13px; }
+.btn-save { padding: 7px 16px; border-radius: 8px; border: none; background: var(--text); color: var(--bg); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; }
+.btn-cancel:hover { background: var(--surface2); }
+.btn-save:hover { opacity: 0.85; }
+.hint { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+@media (max-width: 500px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .app { padding: 1rem 0.75rem; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-left"><h1>ARM</h1><span class="sub">Ass Relationship Manager</span></div>
+    <div class="header-actions">
+      <button class="btn btn-export" onclick="exportHTML()">↓ Export</button>
+      <button class="btn btn-add" onclick="openModal()">+ Add</button>
+    </div>
+  </div>
+
+  <div class="dashboard" id="dashboard"><div class="dash-title">Dashboard</div><div class="dash-section"><div class="dash-label">Amanhã</div><div class="dash-items"><div class="dash-item"><div class="dash-dot" style="background:var(--green)"></div><span class="dash-name">Jonathan Belmar</span><span class="dash-when"> · Amanhã 17:30 — Lyon e Villaseca — café e caminhada</span></div></div></div><div class="dash-divider"></div><div class="dash-section"><div class="dash-label">Esta semana</div><div class="dash-items"><div class="dash-item"><div class="dash-dot" style="background:var(--green)"></div><span class="dash-name">Mario Saavedra</span><span class="dash-when"> · Sáb 16/05 15:00 — Primeiro café</span></div><div class="dash-item"><div class="dash-dot" style="background:var(--green)"></div><span class="dash-name">Luis não Lucho</span><span class="dash-when"> · Seg 18/05 19:30 — Primeiro encontro</span></div></div></div><div class="dash-divider"></div><div class="dash-section"><div class="dash-label">Sem data — acompanhar</div><div class="dash-items"><div class="dash-item"><div class="dash-dot" style="background:var(--text3)"></div><span class="dash-name">Leo</span><span class="dash-when"> · Aguarda resposta do casal</span></div><div class="dash-item"><div class="dash-dot" style="background:var(--text3)"></div><span class="dash-name">Luis Caminhoneiro</span><span class="dash-when"> · Provável semana 3 de Maio</span></div><div class="dash-item"><div class="dash-dot" style="background:var(--text3)"></div><span class="dash-name">William Marchant</span><span class="dash-when"> · Vestiário / treino</span></div></div></div></div>
+  <div class="stats" id="stats"><div class="stat"><div class="stat-n">3</div><div class="stat-l">ativos</div></div><div class="stat"><div class="stat-n">3</div><div class="stat-l">em aberto</div></div><div class="stat"><div class="stat-n">4</div><div class="stat-l">rugby</div></div><div class="stat"><div class="stat-n">7</div><div class="stat-l">arquivo</div></div></div>
+  <div class="filters" id="filters"><button class="filter-btn active" onclick="setFilter('todos')">todos</button><button class="filter-btn " onclick="setFilter('apps')">apps</button><button class="filter-btn " onclick="setFilter('rugby')">rugby</button><button class="filter-btn " onclick="setFilter('arquivo')">arquivo morto</button></div>
+  <div id="board"><div class="grid"><div class="card  has-event">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--green-bg);color:var(--green)">JO</div>
+      <span class="badge" style="background:var(--green-bg);color:var(--green)">ativo</span>
+    </div>
+    <div class="card-name">Jonathan Belmar</div>
+    <div class="card-meta">32 · Chile · versátil</div>
+    <div class="card-note">Tímido que não sabe que é gato. Ursinho de pelúcia. Construção lenta e gostosa.</div>
+    <div class="card-event">📅 Amanhã 17:30</div>
+    
+    <div class="card-next-text">Lyon e Villaseca — café e caminhada</div>
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(1)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(1)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(1)">Apagar</button>
+    </div>
+  </div><div class="card  has-event">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--green-bg);color:var(--green)">MA</div>
+      <span class="badge" style="background:var(--purple-bg);color:var(--purple)">novo</span>
+    </div>
+    <div class="card-name">Mario Saavedra</div>
+    <div class="card-meta">43 · Venezuela · versátil</div>
+    <div class="card-note">Bonito, peludo, safado. Primeiro café 16 ou 17/05. Já sexualizada a conversa. Bem.</div>
+    <div class="card-event">📅 Sáb 16/05 15:00</div>
+    
+    <div class="card-next-text">Primeiro café</div>
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(11)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(11)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(11)">Apagar</button>
+    </div>
+  </div><div class="card  has-event">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--green-bg);color:var(--green)">LU</div>
+      <span class="badge" style="background:var(--purple-bg);color:var(--purple)">novo</span>
+    </div>
+    <div class="card-name">Luis não Lucho</div>
+    <div class="card-meta">36 · Chile · passivo-versátil</div>
+    <div class="card-note">Arredio, não quis sair do app. Mas interessante, ainda não emociona.</div>
+    <div class="card-event">📅 Seg 18/05 19:30</div>
+    
+    <div class="card-next-text">Primeiro encontro</div>
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(18)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(18)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(18)">Apagar</button>
+    </div>
+  </div><div class="card  ">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--green-bg);color:var(--green)">FE</div>
+      <span class="badge" style="background:var(--amber-bg);color:var(--amber)">observação</span>
+    </div>
+    <div class="card-name">Fernando Rincón</div>
+    <div class="card-meta">30 · Colômbia · passivo</div>
+    <div class="card-note">Colombiano passando por Santiago. Vai embora domingo. Logística de produção concluída com maestria.</div>
+    
+    <div class="card-next-text">→ Encontro realizado 13/05</div>
+    
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(2)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(2)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(2)">Apagar</button>
+    </div>
+  </div><div class="card  ">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--green-bg);color:var(--green)">LE</div>
+      <span class="badge" style="background:var(--blue-bg);color:var(--blue)">pendente</span>
+    </div>
+    <div class="card-name">Leo</div>
+    <div class="card-meta">36 · Equador · ativo-vers</div>
+    <div class="card-note">Trio potencial com parceiro 44. Cara de safado. Tesão absurdo.</div>
+    
+    <div class="card-next-text">→ Aguarda resposta do casal</div>
+    
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(4)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(4)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(4)">Apagar</button>
+    </div>
+  </div><div class="card  ">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--green-bg);color:var(--green)">LU</div>
+      <span class="badge" style="background:var(--green-bg);color:var(--green)">agendado</span>
+    </div>
+    <div class="card-name">Luis Caminhoneiro</div>
+    <div class="card-meta">46 · Chile · ?</div>
+    <div class="card-note">Vibe caminhoneiro urso de pint. Não bonito mas chama a atenção.</div>
+    
+    <div class="card-next-text">→ Provável semana 3 de Maio</div>
+    
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(6)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(6)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(6)">Apagar</button>
+    </div>
+  </div><div class="card  ">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--green-bg);color:var(--green)">MA</div>
+      <span class="badge" style="background:var(--gray-bg);color:var(--gray)">experimento</span>
+    </div>
+    <div class="card-name">Mario Diva</div>
+    <div class="card-meta">48 · Chile · passivo</div>
+    <div class="card-note">Diva com jijijiji. Chef gourmet de si mesmo. Temuco 640km. Entretenimento de qualidade.</div>
+    
+    <div class="card-next-text">→ Regar quando der vontade</div>
+    
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(7)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(7)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(7)">Apagar</button>
+    </div>
+  </div><div class="card  ">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--green-bg);color:var(--green)">AR</div>
+      <span class="badge" style="background:var(--gray-bg);color:var(--gray)">experimento</span>
+    </div>
+    <div class="card-name">Arturo</div>
+    <div class="card-meta">45 · Chile · versátil</div>
+    <div class="card-note">Urso bonito de cara. Mora em Temuco.</div>
+    
+    <div class="card-next-text">→ Data de vinda a Santiago</div>
+    
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(9)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(9)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(9)">Apagar</button>
+    </div>
+  </div><div class="card  ">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--coral-bg);color:var(--coral)">WI</div>
+      <span class="badge" style="background:var(--green-bg);color:var(--green)">ativo</span>
+    </div>
+    <div class="card-name">William Marchant</div>
+    <div class="card-meta">35 · Chile · ativo</div>
+    <div class="card-note">Puto em escala industrial. Cúmplice de putaria. Quero beijar selvagem, só isso.</div>
+    
+    <div class="card-next-text">→ Vestiário / treino</div>
+    
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(13)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(13)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(13)">Apagar</button>
+    </div>
+  </div><div class="card  ">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--coral-bg);color:var(--coral)">AL</div>
+      <span class="badge" style="background:var(--gray-bg);color:var(--gray)">experimento</span>
+    </div>
+    <div class="card-name">Alex Maffud</div>
+    <div class="card-meta">34 · Chile · passivo-vers</div>
+    <div class="card-note">Baixinho peludo sorriso safado matador. Lesionado. Conversa aberta.</div>
+    
+    <div class="card-next-text">→ Retorno cirurgia</div>
+    
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(14)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(14)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(14)">Apagar</button>
+    </div>
+  </div><div class="card  ">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--coral-bg);color:var(--coral)">SE</div>
+      <span class="badge" style="background:var(--amber-bg);color:var(--amber)">observação</span>
+    </div>
+    <div class="card-name">Sebastián</div>
+    <div class="card-meta">34 · Chile · passivo</div>
+    <div class="card-note">LINDO. 1,90m. Peludo. Gigante gentil e tímido. Tem namorado.</div>
+    
+    <div class="card-next-text">→ Observar treino</div>
+    
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(15)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(15)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(15)">Apagar</button>
+    </div>
+  </div><div class="card  ">
+    <div class="card-top">
+      <div class="avatar" style="background:var(--coral-bg);color:var(--coral)">OR</div>
+      <span class="badge" style="background:var(--amber-bg);color:var(--amber)">observação</span>
+    </div>
+    <div class="card-name">Orlando</div>
+    <div class="card-meta">36 · Chile · passivo</div>
+    <div class="card-note">Alex sem pelos. Em observação.</div>
+    
+    <div class="card-next-text">→ Observar treino</div>
+    
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(16)">Editar</button>
+      <button class="card-btn" onclick="archiveContact(16)">Arquivar</button>
+      <button class="card-btn danger" onclick="deleteContact(16)">Apagar</button>
+    </div>
+  </div></div></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modal-title">Editar</h2>
+    <div class="row2">
+      <div class="field"><label>Nome</label><input id="f-name" type="text" placeholder="Jonathan"></div>
+      <div class="field"><label>Idade</label><input id="f-age" type="number" placeholder="32"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Origem</label><input id="f-origin" type="text" placeholder="Chile"></div>
+      <div class="field"><label>Role</label><input id="f-role" type="text" placeholder="ativo / passivo / vers"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Categoria</label>
+        <select id="f-cat">
+          <option value="apps">apps</option>
+          <option value="rugby">rugby</option>
+          <option value="arquivo">arquivo morto</option>
+        </select>
+      </div>
+      <div class="field"><label>Status</label>
+        <select id="f-status">
+          <option value="ativo">ativo</option>
+          <option value="agendado">agendado</option>
+          <option value="pendente">pendente</option>
+          <option value="novo">novo</option>
+          <option value="limbo">limbo</option>
+          <option value="manutenção">manutenção</option>
+          <option value="observação">observação</option>
+          <option value="experimento">experimento</option>
+          <option value="arquivo">arquivo</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Data do próximo encontro</label>
+      <input id="f-event-date" type="date">
+      <p class="hint">Deixa vazio se não tiver data concreta.</p>
+    </div>
+    <div class="field">
+      <label>Hora</label>
+      <input id="f-event-time" type="time">
+    </div>
+    <div class="field"><label>Nota do próximo passo</label><input id="f-next" type="text" placeholder="Lyon e Villaseca, café"></div>
+    <div class="field"><label>Nota geral</label><textarea id="f-note" placeholder="Descrição, impressões..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveContact()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STATUS_COLOR = {
+  ativo:        { bg: "var(--green-bg)",  text: "var(--green)"  },
+  agendado:     { bg: "var(--green-bg)",  text: "var(--green)"  },
+  limbo:        { bg: "var(--amber-bg)",  text: "var(--amber)"  },
+  pendente:     { bg: "var(--blue-bg)",   text: "var(--blue)"   },
+  novo:         { bg: "var(--purple-bg)", text: "var(--purple)" },
+  "manutenção": { bg: "var(--gray-bg)",   text: "var(--gray)"   },
+  "observação": { bg: "var(--amber-bg)",  text: "var(--amber)"  },
+  experimento:  { bg: "var(--gray-bg)",   text: "var(--gray)"   },
+  arquivo:      { bg: "var(--red-bg)",    text: "var(--red)"    },
+};
+
+const SEED = [{"id":1,"name":"Jonathan Belmar","age":32,"origin":"Chile","role":"versátil","cat":"apps","status":"ativo","eventDate":"2026-05-15","eventTime":"17:30","next":"Lyon e Villaseca — café e caminhada","note":"Tímido que não sabe que é gato. Ursinho de pelúcia. Construção lenta e gostosa."},{"id":2,"name":"Fernando Rincón","age":30,"origin":"Colômbia","role":"passivo","cat":"apps","status":"observação","eventDate":"","eventTime":"","next":"Encontro realizado 13/05","note":"Colombiano passando por Santiago. Vai embora domingo. Logística de produção concluída com maestria."},{"id":3,"name":"Ricardo Dobra","age":40,"origin":"Chile","role":"ativo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Brasa profunda. Cartas jogadas. Bola com ele. Desisti."},{"id":4,"name":"Leo","age":36,"origin":"Equador","role":"ativo-vers","cat":"apps","status":"pendente","eventDate":"","eventTime":"","next":"Aguarda resposta do casal","note":"Trio potencial com parceiro 44. Cara de safado. Tesão absurdo."},{"id":5,"name":"Camilo","age":31,"origin":"Chile","role":"?","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Aguarda WhatsApp","note":"LINDO. Recém chegado. Vibe ciclista que aprecia o pôr do sol."},{"id":6,"name":"Luis Caminhoneiro","age":46,"origin":"Chile","role":"?","cat":"apps","status":"agendado","eventDate":"","eventTime":"","next":"Provável semana 3 de Maio","note":"Vibe caminhoneiro urso de pint. Não bonito mas chama a atenção."},{"id":7,"name":"Mario Diva","age":48,"origin":"Chile","role":"passivo","cat":"apps","status":"experimento","eventDate":"","eventTime":"","next":"Regar quando der vontade","note":"Diva com jijijiji. Chef gourmet de si mesmo. Temuco 640km. Entretenimento de qualidade."},{"id":9,"name":"Arturo","age":45,"origin":"Chile","role":"versátil","cat":"apps","status":"experimento","eventDate":"","eventTime":"","next":"Data de vinda a Santiago","note":"Urso bonito de cara. Mora em Temuco."},{"id":11,"name":"Mario Saavedra","age":43,"origin":"Venezuela","role":"versátil","cat":"apps","status":"novo","eventDate":"2026-05-16","eventTime":"15:00","next":"Primeiro café","note":"Bonito, peludo, safado. Primeiro café 16 ou 17/05. Já sexualizada a conversa. Bem."},{"id":12,"name":"Andre","age":null,"origin":"Chile","role":"?","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Iniciar conversa","note":"Mandou foto em 10/05. Foto interessante (careca Prince William)."},{"id":13,"name":"William Marchant","age":35,"origin":"Chile","role":"ativo","cat":"rugby","status":"ativo","eventDate":"","eventTime":"","next":"Vestiário / treino","note":"Puto em escala industrial. Cúmplice de putaria. Quero beijar selvagem, só isso."},{"id":14,"name":"Alex Maffud","age":34,"origin":"Chile","role":"passivo-vers","cat":"rugby","status":"experimento","eventDate":"","eventTime":"","next":"Retorno cirurgia","note":"Baixinho peludo sorriso safado matador. Lesionado. Conversa aberta."},{"id":15,"name":"Sebastián","age":34,"origin":"Chile","role":"passivo","cat":"rugby","status":"observação","eventDate":"","eventTime":"","next":"Observar treino","note":"LINDO. 1,90m. Peludo. Gigante gentil e tímido. Tem namorado."},{"id":16,"name":"Orlando","age":36,"origin":"Chile","role":"passivo","cat":"rugby","status":"observação","eventDate":"","eventTime":"","next":"Observar treino","note":"Alex sem pelos. Em observação."},{"id":17,"name":"Nico","age":32,"origin":"Chile","role":"ativo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Voltando devagar. Resistiu antes, agora retorna. Provável desistência."},{"id":18,"name":"Luis não Lucho","age":36,"origin":"Chile","role":"passivo-versátil","cat":"apps","status":"novo","eventDate":"2026-05-18","eventTime":"19:30","next":"Primeiro encontro","note":"Arredio, não quis sair do app. Mas interessante, ainda não emociona."},{"id":19,"name":"Erick","age":null,"origin":"","role":"passivo-versátil","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Engrenar conversa","note":"Primeiro contato rápido 12/05. LINDO. Absurdo. Delicioso. Quero e vou atrás."},{"id":8,"name":"Miguel Bravo","age":34,"origin":"Venezuela","role":"passivo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Tem parceiro. Quer putaria. Arquivado."},{"id":10,"name":"Cristian","age":32,"origin":"Chile","role":"ativo-vers","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Scruff, vizinho da rua. Arquivado."}];
+
+const FILTERS = ["todos","apps","rugby","arquivo"];
+const FILTER_LABELS = { todos:"todos", apps:"apps", rugby:"rugby", arquivo:"arquivo morto" };
+let people = [], activeFilter = "todos", editingId = null;
+
+function load() {
+  const saved = localStorage.getItem("arm_v3");
+  people = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(SEED));
+}
+function save() { localStorage.setItem("arm_v3", JSON.stringify(people)); }
+function nextId() { return people.length ? Math.max(...people.map(p=>p.id))+1 : 1; }
+function initials(n) { return n.slice(0,2).toUpperCase(); }
+function colorFor(p) {
+  if (p.cat==="arquivo") return { bg:"var(--gray-bg)", text:"var(--gray)" };
+  if (p.cat==="rugby")   return { bg:"var(--coral-bg)", text:"var(--coral)" };
+  return { bg:"var(--green-bg)", text:"var(--green)" };
+}
+
+function parseEventDate(p) {
+  if (!p.eventDate) return null;
+  const d = new Date(p.eventDate + (p.eventTime ? "T" + p.eventTime : "T00:00"));
+  return isNaN(d) ? null : d;
+}
+
+function formatEventDisplay(p) {
+  const d = parseEventDate(p);
+  if (!d) return null;
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
+  const eDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const days = Math.round((eDay - today) / 86400000);
+  const timeStr = p.eventTime ? ` ${p.eventTime}` : "";
+  const dow = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"][d.getDay()];
+  const dateStr = `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`;
+  if (days < 0) return { label: `${dateStr}${timeStr} (passou)`, past: true };
+  if (days === 0) return { label: `Hoje${timeStr}`, today: true };
+  if (days === 1) return { label: `Amanhã${timeStr}`, soon: true };
+  if (days <= 6) return { label: `${dow} ${dateStr}${timeStr}`, soon: true };
+  return { label: `${dow} ${dateStr}${timeStr}`, future: true };
+}
+
+function renderDashboard() {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
+  const in7 = new Date(today); in7.setDate(today.getDate()+7);
+
+  const active = people.filter(p => p.cat !== "arquivo");
+  const withDates = active.filter(p => parseEventDate(p)).sort((a,b) => parseEventDate(a)-parseEventDate(b));
+
+  const todayEvents   = withDates.filter(p => { const d=parseEventDate(p); const e=new Date(d.getFullYear(),d.getMonth(),d.getDate()); return e.getTime()===today.getTime(); });
+  const tomorrowEvents= withDates.filter(p => { const d=parseEventDate(p); const e=new Date(d.getFullYear(),d.getMonth(),d.getDate()); return e.getTime()===tomorrow.getTime(); });
+  const weekEvents    = withDates.filter(p => { const d=parseEventDate(p); const e=new Date(d.getFullYear(),d.getMonth(),d.getDate()); return e>tomorrow && e<=in7; });
+  const stale         = active.filter(p => !parseEventDate(p) && ["ativo","agendado","pendente"].includes(p.status));
+
+  function itemHTML(p) {
+    const ev = formatEventDisplay(p);
+    const timeStr = ev ? ` · ${ev.label}` : "";
+    return `<div class="dash-item"><div class="dash-dot" style="background:${colorFor(p).text}"></div><span class="dash-name">${p.name}</span><span class="dash-when">${timeStr}${p.next ? " — " + p.next : ""}</span></div>`;
+  }
+
+  let html = `<div class="dash-title">Dashboard</div>`;
+
+  if (todayEvents.length) {
+    html += `<div class="dash-section"><div class="dash-label">Hoje</div><div class="dash-items">${todayEvents.map(itemHTML).join("")}</div></div>`;
+    if (tomorrowEvents.length || weekEvents.length || stale.length) html += `<div class="dash-divider"></div>`;
+  }
+  if (tomorrowEvents.length) {
+    html += `<div class="dash-section"><div class="dash-label">Amanhã</div><div class="dash-items">${tomorrowEvents.map(itemHTML).join("")}</div></div>`;
+    if (weekEvents.length || stale.length) html += `<div class="dash-divider"></div>`;
+  }
+  if (weekEvents.length) {
+    html += `<div class="dash-section"><div class="dash-label">Esta semana</div><div class="dash-items">${weekEvents.map(itemHTML).join("")}</div></div>`;
+    if (stale.length) html += `<div class="dash-divider"></div>`;
+  }
+  if (stale.length) {
+    html += `<div class="dash-section"><div class="dash-label">Sem data — acompanhar</div><div class="dash-items">${stale.map(p=>`<div class="dash-item"><div class="dash-dot" style="background:var(--text3)"></div><span class="dash-name">${p.name}</span><span class="dash-when">${p.next ? " · " + p.next : ""}</span></div>`).join("")}</div></div>`;
+  }
+  if (!todayEvents.length && !tomorrowEvents.length && !weekEvents.length && !stale.length) {
+    html += `<span class="dash-empty">Pipeline limpo por enquanto.</span>`;
+  }
+
+  document.getElementById("dashboard").innerHTML = html;
+}
+
+function renderStats() {
+  const a = people.filter(p=>p.cat!=="arquivo"&&["ativo","agendado"].includes(p.status)).length;
+  const b = people.filter(p=>["pendente","novo","limbo"].includes(p.status)).length;
+  const c = people.filter(p=>p.cat==="rugby").length;
+  const d = people.filter(p=>p.cat==="arquivo").length;
+  document.getElementById("stats").innerHTML =
+    [{n:a,l:"ativos"},{n:b,l:"em aberto"},{n:c,l:"rugby"},{n:d,l:"arquivo"}]
+    .map(x=>`<div class="stat"><div class="stat-n">${x.n}</div><div class="stat-l">${x.l}</div></div>`).join("");
+}
+
+function renderFilters() {
+  document.getElementById("filters").innerHTML = FILTERS.map(f=>
+    `<button class="filter-btn ${f===activeFilter?"active":""}" onclick="setFilter('${f}')">${FILTER_LABELS[f]}</button>`
+  ).join("");
+}
+
+function setFilter(f) { activeFilter=f; render(); }
+
+function renderCard(p) {
+  const c  = colorFor(p);
+  const sc = STATUS_COLOR[p.status] || STATUS_COLOR["manutenção"];
+  const ar = p.cat==="arquivo";
+  const ev = formatEventDisplay(p);
+  const hasEvent = ev && !ev.past;
+  return `<div class="card ${ar?"archived":""} ${hasEvent?"has-event":""}">
+    <div class="card-top">
+      <div class="avatar" style="background:${c.bg};color:${c.text}">${initials(p.name)}</div>
+      <span class="badge" style="background:${sc.bg};color:${sc.text}">${p.status}</span>
+    </div>
+    <div class="card-name">${p.name}</div>
+    <div class="card-meta">${p.age?p.age+" · ":""}${p.origin||""} · ${p.role||""}</div>
+    <div class="card-note">${p.note||""}</div>
+    ${ev ? `<div class="card-event">📅 ${ev.label}</div>` : ""}
+    ${p.next && !ev ? `<div class="card-next-text">→ ${p.next}</div>` : ""}
+    ${p.next && ev ? `<div class="card-next-text">${p.next}</div>` : ""}
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(${p.id})">Editar</button>
+      <button class="card-btn" onclick="archiveContact(${p.id})">${ar?"Restaurar":"Arquivar"}</button>
+      <button class="card-btn danger" onclick="deleteContact(${p.id})">Apagar</button>
+    </div>
+  </div>`;
+}
+
+function render() {
+  renderDashboard();
+  renderStats();
+  renderFilters();
+  const filtered = activeFilter==="todos"
+    ? people.filter(p=>p.cat!=="arquivo")
+    : people.filter(p=>p.cat===activeFilter);
+  const sorted = [...filtered].sort((a,b)=>{
+    const da=parseEventDate(a), db=parseEventDate(b);
+    if(da&&db) return da-db;
+    if(da) return -1;
+    if(db) return 1;
+    return 0;
+  });
+  document.getElementById("board").innerHTML = sorted.length
+    ? `<div class="grid">${sorted.map(renderCard).join("")}</div>`
+    : `<div class="empty">Nenhum contato aqui.</div>`;
+}
+
+function openModal(id) {
+  editingId = id||null;
+  document.getElementById("modal-title").textContent = id?"Editar":"Novo contato";
+  if (id) {
+    const p = people.find(x=>x.id===id);
+    document.getElementById("f-name").value       = p.name||"";
+    document.getElementById("f-age").value        = p.age||"";
+    document.getElementById("f-origin").value     = p.origin||"";
+    document.getElementById("f-role").value       = p.role||"";
+    document.getElementById("f-cat").value        = p.cat||"apps";
+    document.getElementById("f-status").value     = p.status||"ativo";
+    document.getElementById("f-event-date").value = p.eventDate||"";
+    document.getElementById("f-event-time").value = p.eventTime||"";
+    document.getElementById("f-next").value       = p.next||"";
+    document.getElementById("f-note").value       = p.note||"";
+  } else {
+    ["f-name","f-age","f-origin","f-role","f-event-date","f-event-time","f-next","f-note"].forEach(i=>document.getElementById(i).value="");
+    document.getElementById("f-cat").value="apps";
+    document.getElementById("f-status").value="novo";
+  }
+  document.getElementById("overlay").classList.add("open");
+}
+
+function closeModal() { document.getElementById("overlay").classList.remove("open"); editingId=null; }
+
+function saveContact() {
+  const name = document.getElementById("f-name").value.trim();
+  if (!name) { alert("Nome é obrigatório."); return; }
+  const data = {
+    name, age: parseInt(document.getElementById("f-age").value)||null,
+    origin:    document.getElementById("f-origin").value.trim(),
+    role:      document.getElementById("f-role").value.trim(),
+    cat:       document.getElementById("f-cat").value,
+    status:    document.getElementById("f-status").value,
+    eventDate: document.getElementById("f-event-date").value,
+    eventTime: document.getElementById("f-event-time").value,
+    next:      document.getElementById("f-next").value.trim(),
+    note:      document.getElementById("f-note").value.trim(),
+  };
+  if (editingId) { const i=people.findIndex(p=>p.id===editingId); people[i]={...people[i],...data}; }
+  else people.push({id:nextId(),...data});
+  save(); closeModal(); render();
+}
+
+function archiveContact(id) {
+  const p=people.find(x=>x.id===id); if(!p) return;
+  if(p.cat==="arquivo"){p.cat="apps";p.status="ativo";}
+  else{p.cat="arquivo";p.status="arquivo";}
+  save(); render();
+}
+
+function deleteContact(id) {
+  if(!confirm("Apagar definitivamente?")) return;
+  people=people.filter(p=>p.id!==id); save(); render();
+}
+
+function exportHTML() {
+  const snapshot = JSON.stringify(people);
+  const html = document.documentElement.outerHTML.replace(
+    /const SEED = \[.*?\];/s,
+    "const SEED = " + snapshot + ";"
+  );
+  const blob = new Blob([html],{type:"text/html"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "ARM_" + new Date().toISOString().slice(0,10) + ".html";
+  a.click();
+}
+
+document.getElementById("overlay").addEventListener("click",function(e){if(e.target===this)closeModal();});
+load(); render();
+</script>
+
+
+</body></html>
