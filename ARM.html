@@ -132,8 +132,8 @@ h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
   </div>
 
   <div class="dashboard" id="dashboard"><div class="dash-title">Dashboard</div><div class="dash-section"><div class="dash-label">Hoje</div><div class="dash-items"><div class="dash-item"><div class="dash-dot" style="background:var(--green)"></div><span class="dash-name">Roni Matallana</span><span class="dash-when"> · Hoje 19:30 — La Mom</span></div></div></div><div class="dash-divider"></div><div class="dash-section"><div class="dash-label">Amanhã</div><div class="dash-items"><div class="dash-item"><div class="dash-dot" style="background:var(--green)"></div><span class="dash-name">José Ignacio</span><span class="dash-when"> · Amanhã 19:00 — Las Condes, casa dele</span></div></div></div><div class="dash-divider"></div><div class="dash-section"><div class="dash-label">Esta semana</div><div class="dash-items"><div class="dash-item"><div class="dash-dot" style="background:var(--green)"></div><span class="dash-name">Seba Moreno</span><span class="dash-when"> · Sex 03/07 18:00 — Concón Booking</span></div><div class="dash-item"><div class="dash-dot" style="background:var(--green)"></div><span class="dash-name">Isaac Navarrete</span><span class="dash-when"> · Ter 07/07 19:00 — Casa dele</span></div><div class="dash-item"><div class="dash-dot" style="background:var(--green)"></div><span class="dash-name">Gustavo Guzmán</span><span class="dash-when"> · Qua 08/07 18:30 — Marcar</span></div></div></div></div>
-  <div class="stats" id="stats"><div class="stat"><div class="stat-n">3</div><div class="stat-l">ativos</div></div><div class="stat"><div class="stat-n">3</div><div class="stat-l">em aberto</div></div><div class="stat"><div class="stat-n">0</div><div class="stat-l">rugby</div></div><div class="stat"><div class="stat-n">35</div><div class="stat-l">arquivo</div></div></div>
-  <div class="filters" id="filters"><button class="filter-btn active" onclick="setFilter('todos')">todos</button><button class="filter-btn " onclick="setFilter('apps')">apps</button><button class="filter-btn " onclick="setFilter('rugby')">rugby</button><button class="filter-btn " onclick="setFilter('arquivo')">arquivo morto</button></div>
+  <div class="stats" id="stats"><div class="stat"><div class="stat-n">3</div><div class="stat-l">ativos</div></div><div class="stat"><div class="stat-n">3</div><div class="stat-l">em aberto</div></div><div class="stat"><div class="stat-n">0</div><div class="stat-l">outros</div></div><div class="stat"><div class="stat-n">35</div><div class="stat-l">arquivo</div></div></div>
+  <div class="filters" id="filters"><button class="filter-btn active" onclick="setFilter('todos')">todos</button><button class="filter-btn " onclick="setFilter('apps')">apps</button><button class="filter-btn " onclick="setFilter('outros')">outros</button><button class="filter-btn " onclick="setFilter('arquivo')">arquivo morto</button></div>
   <div id="board"><div class="grid"><div class="card  has-event">
     <div class="card-top">
       <div class="avatar" style="background:var(--green-bg);color:var(--green)">RO</div>
@@ -248,7 +248,7 @@ h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
       <div class="field"><label>Categoria</label>
         <select id="f-cat">
           <option value="apps">apps</option>
-          <option value="rugby">rugby</option>
+          <option value="outros">outros</option>
           <option value="arquivo">arquivo morto</option>
         </select>
       </div>
@@ -277,6 +277,10 @@ h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
     </div>
     <div class="field"><label>Nota do próximo passo</label><input id="f-next" type="text" placeholder="Lyon e Villaseca, café"></div>
     <div class="field"><label>Nota geral</label><textarea id="f-note" placeholder="Descrição, impressões..."></textarea></div>
+    <div class="row2">
+      <div class="field"><label>Encontros</label><input id="f-meetings" type="number" min="0" max="100" placeholder="0"></div>
+      <div class="field"><label>Sexo</label><select id="f-sex"><option value="">—</option><option value="sim">Sim</option><option value="não">Não</option></select></div>
+    </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
       <button class="btn-save" onclick="saveContact()">Salvar</button>
@@ -299,8 +303,8 @@ const STATUS_COLOR = {
 
 const SEED = [{"id":1,"name":"Jonathan Belmar","age":32,"origin":"Chile","role":"versátil","cat":"arquivo","status":"arquivo","eventDate":"2026-05-15","eventTime":"17:30","next":"Lyon e Villaseca — café e caminhada","note":"Tímido que não sabe que é gato. Ursinho de pelúcia. Construção lenta e gostosa."},{"id":2,"name":"Fernando Rincón","age":30,"origin":"Colômbia","role":"passivo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Encontro realizado 13/05","note":"Colombiano passando por Santiago. Vai embora domingo. Logística de produção concluída com maestria."},{"id":3,"name":"Ricardo Dobra","age":40,"origin":"Chile","role":"ativo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Brasa profunda. Cartas jogadas. Bola com ele. Desisti."},{"id":4,"name":"Leo e Oscar","age":37,"origin":"Equador","role":"ativo-vers","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Próxima data","note":"Trio potencial com parceiro 44. Cara de safado. Tesão absurdo."},{"id":5,"name":"Camilo","age":31,"origin":"Chile","role":"?","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Aguarda WhatsApp","note":"LINDO. Recém chegado. Vibe ciclista que aprecia o pôr do sol."},{"id":6,"name":"Luis Caminhoneiro","age":46,"origin":"Chile","role":"?","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Provável semana 3 de Maio","note":"Vibe caminhoneiro urso de pint. Não bonito mas chama a atenção."},{"id":7,"name":"Mario Diva","age":48,"origin":"Chile","role":"passivo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Regar quando der vontade","note":"Diva com jijijiji. Chef gourmet de si mesmo. Temuco 640km. Entretenimento de qualidade."},{"id":9,"name":"Arturo Lagos","age":45,"origin":"Chile","role":"versátil","cat":"apps","status":"pendente","eventDate":"2026-07-10","eventTime":"18:00","next":"Vou a Temuco","note":"Urso bonito de cara. Passaremos fim de semana na casa dele."},{"id":11,"name":"Mario Saavedra","age":43,"origin":"Venezuela","role":"versátil","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Café","note":"Bonito, peludo, safado. Já sexualizada a conversa. Chato pra marcar data"},{"id":12,"name":"Andre","age":null,"origin":"Chile","role":"?","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Iniciar conversa","note":"Mandou foto em 10/05. Foto interessante (careca Prince William)."},{"id":13,"name":"William Marchant","age":35,"origin":"Chile","role":"ativo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Vestiário / treino","note":"Puto em escala industrial. Cúmplice de putaria. Quero beijar selvagem, só isso."},{"id":14,"name":"Alex Maffud","age":34,"origin":"Chile","role":"Passivo-versátil","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Revisar","note":"Baixinho peludo sorriso safado matador. Lesionado. Conversa aberta."},{"id":15,"name":"Sebastián","age":34,"origin":"Chile","role":"passivo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Observar treino","note":"LINDO. 1,90m. Peludo. Gigante gentil e tímido. Tem namorado."},{"id":16,"name":"Orlando","age":36,"origin":"Chile","role":"passivo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Observar treino","note":"Alex sem pelos. Em observação."},{"id":17,"name":"Nico","age":32,"origin":"Chile","role":"ativo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Voltando devagar. Resistiu antes, agora retorna. Provável desistência."},{"id":18,"name":"Luis não Lucho","age":36,"origin":"Chile","role":"passivo-versátil","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Primeiro encontro","note":"Arredio, não quis sair do app. Mas interessante, ainda não emociona. Deu desculpa pra não ir."},{"id":19,"name":"Erick","age":null,"origin":"","role":"passivo-versátil","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Engrenar conversa","note":"Primeiro contato rápido 12/05. LINDO. Absurdo. Delicioso. Quero e vou atrás."},{"id":8,"name":"Miguel Bravo","age":34,"origin":"Venezuela","role":"passivo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Tem parceiro. Quer putaria. Arquivado."},{"id":10,"name":"Cristian","age":32,"origin":"Chile","role":"ativo-vers","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Scruff, vizinho da rua. Arquivado."},{"id":20,"name":"Miguel Alarcón","age":34,"origin":"Chile","role":"Ativo-versátil","cat":"arquivo","status":"arquivo","eventDate":"2026-05-20","eventTime":"17:30","next":"","note":"Inteligente, interessante. Lindo, gostoso, carinhoso. Quero"},{"id":21,"name":"José Francisco","age":49,"origin":"Chile","role":"Passivo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Confirmar encontro","note":"Falamos por telefone na 1ª vez. Quer o catálogo inteiro de putaria."},{"id":22,"name":"José Ignacio","age":33,"origin":"Chile","role":"Passivo","cat":"apps","status":"ativo","eventDate":"2026-07-02","eventTime":"19:00","next":"Las Condes, casa dele","note":"Delícia: lento e rápido ao mesmo tempo. Se expressa com presença, não palavras"},{"id":23,"name":"Andy García","age":33,"origin":"Cuba","role":"Passivo","cat":"arquivo","status":"arquivo","eventDate":"2026-05-22","eventTime":"17:00","next":"Provi","note":"Espirito venezuelano. Sexualiza mas se faz de puritano. Chato pra marcar data"},{"id":24,"name":"Sebastian Side","age":25,"origin":"Chile","role":"Side","cat":"arquivo","status":"arquivo","eventDate":"2026-06-01","eventTime":"08:30","next":"Booking","note":"Pajas e oral, passar a noite. Ursinho delicioso e safado. Quero"},{"id":25,"name":"Javier Torres","age":37,"origin":"","role":"Passivo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Metro Bellavista La Florida","note":"Submisso exigente pidão. Parece bonito. Cancelei por doença. Pedi remarcar"},{"id":26,"name":"Rodrigo Pavez","age":32,"origin":"Chile","role":"Passivo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Café La Mom","note":"Parece interessante. Mas parece gordo demais. Vejamos o que prevalece. Confirmar"},{"id":27,"name":"Coke Silva","age":40,"origin":"Chile","role":"Passivo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Café 2?","note":"Bonito não lindo, interessante. Gostoso"},{"id":28,"name":"Heddy","age":45,"origin":"Chile","role":"Passivo","cat":"arquivo","status":"arquivo","eventDate":"2026-05-28","eventTime":"20:30","next":"Encontro sexo","note":"Tudo menos penetração."},{"id":29,"name":"Felipe Muñoz","age":33,"origin":"Chile","role":"Passivo versátil","cat":"arquivo","status":"arquivo","eventDate":"2026-06-16","eventTime":"17:30","next":"Marcar","note":"Falamos do que buscamos, expectativas baixas, crescendo"},{"id":30,"name":"Antonio Sánchez","age":32,"origin":"Chile","role":"Ativo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Se fudeu","note":"Bonito. Apressadinho. Cretino, idiota, iludido e surtado que se queimou sozinho."},{"id":31,"name":"Gustavo Guzmán","age":43,"origin":"Chile","role":"Ativo-versátil","cat":"apps","status":"novo","eventDate":"2026-07-08","eventTime":"18:30","next":"Marcar","note":"Masculino, maduro, inteligente. Ele investindo mais e mais depois que viu que não cobro presença"},{"id":32,"name":"Alex Sausa","age":43,"origin":"Chile","role":"Passivo-versátil","cat":"arquivo","status":"arquivo","eventDate":"2026-06-10","eventTime":"18:30","next":"Marcar","note":"Inteligente, bonito, algo tímido, algo intimidado"},{"id":33,"name":"Diego Hernández","age":37,"origin":"Chile","role":"Passivo-versátil","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Esfriar","note":"Atração explosiva. Interessante. Bonito, mas muito gordo. Não quero mais."},{"id":34,"name":"Isaac Navarrete","age":30,"origin":"Chile","role":"Passivo","cat":"apps","status":"ativo","eventDate":"2026-07-07","eventTime":"19:00","next":"Casa dele","note":"Ñuñoa, profe inglés, interesante, sorriso bonito, explosivo e responsivo na cama"},{"id":35,"name":"Seba Moreno","age":30,"origin":"Chile","role":"Versátil","cat":"apps","status":"ativo","eventDate":"2026-07-03","eventTime":"18:00","next":"Concón Booking","note":"San Felipe, profe geo+historia, bonito, culto. Interessante. Escritor. Investimento mútuo."},{"id":36,"name":"Marlon Barrios","age":30,"origin":"Chile","role":"Versátil","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Observar","note":"Macul. Não excepcional em nada, mas pontua. Meio chuchu. Ressuscitou. Mais ou menos"},{"id":37,"name":"Yercko Talamilla","age":26,"origin":"Chile","role":"Passivo","cat":"arquivo","status":"arquivo","eventDate":"","eventTime":"","next":"Marcar","note":"Lindo. Aparece esporadicamente. Provavelmente só sexo. Ok."},{"id":38,"name":"Juan Carlos","age":29,"origin":"Chile","role":"Passivo","cat":"arquivo","status":"arquivo","eventDate":"2026-06-29","eventTime":"18:30","next":"Plaza Vespucio","note":"Faminto gostosíssimo apresssado, agora revelando ternura. Lindo de cara e corpo."},{"id":39,"name":"Sebastián Valdivia","age":31,"origin":"Chile","role":"Passivo","cat":"arquivo","status":"arquivo","eventDate":"2026-07-10","eventTime":"11:00","next":"Viajar","note":"Valdivia. Noivo de Nico, lindos, deliciosos. Microbiologista. Têm trios eventuais. Quero"},{"id":40,"name":"Roni Matallana","age":31,"origin":"Venezuela","role":"Versátil","cat":"apps","status":"novo","eventDate":"2026-07-01","eventTime":"19:30","next":"La Mom","note":"Devagar e paciente. Quer agradar. Ainda não consegue. Mas segue tentando"},{"id":41,"name":"Ian González","age":32,"origin":"Chile","role":"Versátil-passivo","cat":"arquivo","status":"arquivo","eventDate":"2026-06-25","eventTime":"19:00","next":"Marcar","note":"Maipu. Dentista e professor. Muito bonito, inteligente, interessante, bem humorado. Excelente impressão."}];
 
-const FILTERS = ["todos","apps","rugby","arquivo"];
-const FILTER_LABELS = { todos:"todos", apps:"apps", rugby:"rugby", arquivo:"arquivo morto" };
+const FILTERS = ["todos","apps","outros","arquivo"];
+const FILTER_LABELS = { todos:"todos", apps:"apps", outros:"outros", arquivo:"arquivo morto" };
 let people = [], activeFilter = "todos", editingId = null;
 
 function load() {
@@ -312,7 +316,7 @@ function nextId() { return people.length ? Math.max(...people.map(p=>p.id))+1 : 
 function initials(n) { return n.slice(0,2).toUpperCase(); }
 function colorFor(p) {
   if (p.cat==="arquivo") return { bg:"var(--gray-bg)", text:"var(--gray)" };
-  if (p.cat==="rugby")   return { bg:"var(--coral-bg)", text:"var(--coral)" };
+  if (p.cat==="outros")   return { bg:"var(--coral-bg)", text:"var(--coral)" };
   return { bg:"var(--green-bg)", text:"var(--green)" };
 }
 
@@ -387,10 +391,10 @@ function renderDashboard() {
 function renderStats() {
   const a = people.filter(p=>p.cat!=="arquivo"&&["ativo","agendado"].includes(p.status)).length;
   const b = people.filter(p=>["pendente","novo","limbo"].includes(p.status)).length;
-  const c = people.filter(p=>p.cat==="rugby").length;
+  const c = people.filter(p=>p.cat==="outros").length;
   const d = people.filter(p=>p.cat==="arquivo").length;
   document.getElementById("stats").innerHTML =
-    [{n:a,l:"ativos"},{n:b,l:"em aberto"},{n:c,l:"rugby"},{n:d,l:"arquivo"}]
+    [{n:a,l:"ativos"},{n:b,l:"em aberto"},{n:c,l:"outros"},{n:d,l:"arquivo"}]
     .map(x=>`<div class="stat"><div class="stat-n">${x.n}</div><div class="stat-l">${x.l}</div></div>`).join("");
 }
 
@@ -416,6 +420,7 @@ function renderCard(p) {
     <div class="card-name">${p.name}</div>
     <div class="card-meta">${p.age?p.age+" · ":""}${p.origin||""} · ${p.role||""}</div>
     <div class="card-note">${p.note||""}</div>
+    ${(p.meetings||p.sex) ? `<div class="card-note" style="display:flex;gap:10px;margin-top:5px;border-top:none;padding-top:0">${p.meetings!=null&&p.meetings>0?`<span>🤝 ${p.meetings} encontro${p.meetings===1?"":"s"}</span>`:""}${p.sex?`<span>${p.sex==="sim"?"❤️ Sexo: sim":"○ Sexo: não"}</span>`:""}</div>` : ""}
     ${ev ? `<div class="card-event">📅 ${ev.label}</div>` : ""}
     ${p.next && !ev ? `<div class="card-next-text">→ ${p.next}</div>` : ""}
     ${p.next && ev ? `<div class="card-next-text">${p.next}</div>` : ""}
@@ -461,8 +466,11 @@ function openModal(id) {
     document.getElementById("f-event-time").value = p.eventTime||"";
     document.getElementById("f-next").value       = p.next||"";
     document.getElementById("f-note").value       = p.note||"";
+    document.getElementById("f-meetings").value   = p.meetings!=null?p.meetings:"";
+    document.getElementById("f-sex").value        = p.sex||"";
   } else {
-    ["f-name","f-age","f-origin","f-role","f-event-date","f-event-time","f-next","f-note"].forEach(i=>document.getElementById(i).value="");
+    ["f-name","f-age","f-origin","f-role","f-event-date","f-event-time","f-next","f-note","f-meetings"].forEach(i=>document.getElementById(i).value="");
+    document.getElementById("f-sex").value="";
     document.getElementById("f-cat").value="apps";
     document.getElementById("f-status").value="novo";
   }
@@ -484,6 +492,8 @@ function saveContact() {
     eventTime: document.getElementById("f-event-time").value,
     next:      document.getElementById("f-next").value.trim(),
     note:      document.getElementById("f-note").value.trim(),
+    meetings:  parseInt(document.getElementById("f-meetings").value)||0,
+    sex:       document.getElementById("f-sex").value,
   };
   if (editingId) { const i=people.findIndex(p=>p.id===editingId); people[i]={...people[i],...data}; }
   else people.push({id:nextId(),...data});
