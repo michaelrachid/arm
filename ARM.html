@@ -1,0 +1,462 @@
+<html lang="pt"><head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ARM">
+<title>ARM</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f6f3; --surface: #ffffff; --surface2: #f1efe8;
+  --border: rgba(0,0,0,0.09); --border2: rgba(0,0,0,0.17);
+  --text: #1a1a18; --text2: #6b6b67; --text3: #b0b0aa;
+  --radius: 12px; --radius-sm: 8px;
+  --green-bg: #E1F5EE; --green: #0F6E56;
+  --blue-bg: #E6F1FB; --blue: #185FA5;
+  --amber-bg: #FAEEDA; --amber: #854F0B;
+  --purple-bg: #EEEDFE; --purple: #534AB7;
+  --red-bg: #FCEBEB; --red: #A32D2D;
+  --gray-bg: #F1EFE8; --gray: #5F5E5A;
+  --coral-bg: #FAECE7; --coral: #993C1D;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a18; --surface: #232321; --surface2: #2c2c2a;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.14);
+    --text: #f0ede8; --text2: #a0a09a; --text3: #6b6b67;
+    --green-bg: #0d2e22; --blue-bg: #0d1f35; --amber-bg: #2e1f06;
+    --purple-bg: #1a1830; --red-bg: #2e0d0d; --gray-bg: #252523; --coral-bg: #2e1208;
+  }
+}
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: env(safe-area-inset-bottom); }
+.app { max-width: 980px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+/* HEADER */
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px; }
+.header-left { display: flex; align-items: baseline; gap: 8px; }
+h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+.sub { font-size: 12px; color: var(--text2); }
+.header-actions { display: flex; gap: 6px; }
+.btn { padding: 7px 16px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 600; transition: opacity 0.15s; font-family: inherit; letter-spacing: 0.01em; }
+.btn-add { background: var(--text); color: var(--bg); border: none; }
+.btn-export { background: transparent; color: var(--text2); border: 0.5px solid var(--border2); }
+.btn:hover { opacity: 0.72; }
+
+/* DASHBOARD */
+.dashboard { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+.dash-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 0.75rem; }
+.dash-section { margin-bottom: 0.75rem; }
+.dash-section:last-child { margin-bottom: 0; }
+.dash-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; font-weight: 500; }
+.dash-items { display: flex; flex-direction: column; gap: 4px; }
+.dash-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.dash-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dash-name { font-weight: 500; }
+.dash-when { color: var(--text2); font-size: 12px; }
+.dash-empty { font-size: 13px; color: var(--text3); font-style: italic; }
+.dash-divider { height: 0.5px; background: var(--border); margin: 0.75rem 0; }
+
+/* STATS */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1.25rem; }
+.stat { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.65rem 0.9rem; }
+.stat-n { font-size: 20px; font-weight: 700; }
+.stat-l { font-size: 11px; color: var(--text2); margin-top: 1px; }
+
+/* FILTERS */
+.filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.filter-btn { font-size: 12px; padding: 5px 13px; border-radius: 20px; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.filter-btn.active { background: var(--text); color: var(--bg); border-color: transparent; }
+
+/* GRID */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 0.9rem; transition: border-color 0.15s; }
+.card:hover { border-color: var(--border2); }
+.card.archived { opacity: 0.38; }
+.card.has-event { border-left: 3px solid var(--green); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+.card-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.card-meta { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+.card-note { font-size: 11px; color: var(--text2); border-top: 0.5px solid var(--border); padding-top: 7px; margin-top: 7px; line-height: 1.55; }
+.card-event { font-size: 11px; color: var(--green); margin-top: 7px; font-weight: 500; }
+.card-next-text { font-size: 11px; color: var(--blue); margin-top: 5px; }
+.card-actions { display: flex; gap: 5px; margin-top: 8px; border-top: 0.5px solid var(--border); padding-top: 7px; flex-wrap: wrap; }
+.card-btn { font-size: 10px; padding: 3px 9px; border-radius: 5px; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; font-family: inherit; transition: background 0.12s; }
+.card-btn:hover { background: var(--surface2); }
+.card-btn.danger { color: var(--red); border-color: #F7C1C1; }
+.card-btn.danger:hover { background: var(--red-bg); }
+.empty { text-align: center; padding: 3rem; color: var(--text3); font-size: 13px; }
+
+/* MODAL */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.48); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
+.overlay.open { display: flex; }
+.modal { background: var(--surface); border-radius: var(--radius); padding: 1.25rem; width: 100%; max-width: 420px; max-height: 92vh; overflow-y: auto; }
+.modal h2 { font-size: 16px; font-weight: 700; margin-bottom: 1.1rem; }
+.field { margin-bottom: 0.85rem; }
+.field label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 8px 10px; border: 0.5px solid var(--border2);
+  border-radius: var(--radius-sm); background: var(--bg); color: var(--text);
+  font-family: inherit; font-size: 14px; outline: none; transition: border-color 0.15s;
+  -webkit-appearance: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--text); }
+.field textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1rem; }
+.btn-cancel { padding: 7px 14px; border-radius: 8px; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; font-family: inherit; font-size: 13px; }
+.btn-save { padding: 7px 16px; border-radius: 8px; border: none; background: var(--text); color: var(--bg); cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; }
+.btn-cancel:hover { background: var(--surface2); }
+.btn-save:hover { opacity: 0.85; }
+.hint { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+@media (max-width: 500px) {
+  .app { padding: 1rem 0.75rem; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-left"><h1>ARM</h1><span class="sub">Ass Relationship Manager</span></div>
+    <div class="header-actions">
+      <button class="btn btn-export" onclick="exportHTML()">↓ Export</button>
+      <button class="btn btn-add" onclick="openModal()">+ Add</button>
+    </div>
+  </div>
+
+  <div class="dashboard" id="dashboard"></div>
+  <div class="stats" id="stats"></div>
+  <div class="filters" id="filters"></div>
+  <div id="board"></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modal-title">Editar</h2>
+    <div class="row2">
+      <div class="field"><label>Nome</label><input id="f-name" type="text" placeholder="Jonathan"></div>
+      <div class="field"><label>Idade</label><input id="f-age" type="number" placeholder="32"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Origem</label><input id="f-origin" type="text" placeholder="Chile"></div>
+      <div class="field"><label>Role</label><input id="f-role" type="text" placeholder="ativo / passivo / vers"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Comuna</label><input id="f-comuna" type="text" placeholder="Providencia"></div>
+      <div class="field"><label>Profissão</label><input id="f-prof" type="text" placeholder="Advogado"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Status</label>
+        <select id="f-status">
+          <option value="ativo">ativo</option>
+          <option value="agendado">agendado</option>
+          <option value="pendente">pendente</option>
+          <option value="novo">novo</option>
+          <option value="limbo">limbo</option>
+          <option value="manutenção">manutenção</option>
+          <option value="observação">observação</option>
+          <option value="experimento">experimento</option>
+          <option value="arquivo">arquivo</option>
+        </select>
+      </div>
+      <div class="field"><label>Canal</label>
+        <select id="f-canal">
+          <option value="">—</option>
+          <option value="WhatsApp">WhatsApp</option>
+          <option value="Scruff">Scruff</option>
+          <option value="Grindr">Grindr</option>
+          <option value="Tinder">Tinder</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Data do próximo encontro</label>
+      <input id="f-event-date" type="date">
+      <p class="hint">Deixa vazio se não tiver data concreta.</p>
+    </div>
+    <div class="field">
+      <label>Hora</label>
+      <input id="f-event-time" type="time">
+    </div>
+    <div class="field"><label>Nota do próximo passo</label><input id="f-next" type="text" placeholder="Lyon e Villaseca, café"></div>
+    <div class="field"><label>Nota geral</label><textarea id="f-note" placeholder="Descrição, impressões..."></textarea></div>
+    <div class="row2">
+      <div class="field"><label>Encontros</label><input id="f-meetings" type="number" min="0" max="100" placeholder="0"></div>
+      <div class="field"><label>Sexo</label><select id="f-sex"><option value="">—</option><option value="sim">Sim</option><option value="não">Não</option></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveContact()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STATUS_COLOR = {
+  ativo:        { bg: "var(--green-bg)",  text: "var(--green)"  },
+  agendado:     { bg: "var(--green-bg)",  text: "var(--green)"  },
+  limbo:        { bg: "var(--amber-bg)",  text: "var(--amber)"  },
+  pendente:     { bg: "var(--blue-bg)",   text: "var(--blue)"   },
+  novo:         { bg: "var(--purple-bg)", text: "var(--purple)" },
+  "manutenção": { bg: "var(--gray-bg)",   text: "var(--gray)"   },
+  "observação": { bg: "var(--amber-bg)",  text: "var(--amber)"  },
+  experimento:  { bg: "var(--gray-bg)",   text: "var(--gray)"   },
+  arquivo:      { bg: "var(--red-bg)",    text: "var(--red)"    },
+};
+
+const SEED = [{"id":1,"name":"Jonathan Belmar","age":32,"origin":"Chile","role":"versátil","status":"arquivo","eventDate":"2026-05-15","eventTime":"17:30","next":"Lyon e Villaseca — café e caminhada","note":"Tímido que não sabe que é gato. Ursinho de pelúcia. Construção lenta e gostosa.","meetings":1,"sex":"não","comuna":"","profissao":"","canal":""},{"id":2,"name":"Fernando Rincón","age":30,"origin":"Colômbia","role":"passivo","status":"arquivo","eventDate":"","eventTime":"","next":"Encontro realizado 13/05","note":"Colombiano passando por Santiago. Vai embora domingo. Logística de produção concluída com maestria.","meetings":1,"sex":"sim","comuna":"","profissao":"","canal":""},{"id":3,"name":"Ricardo Dobra","age":40,"origin":"Chile","role":"ativo","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Brasa profunda. Cartas jogadas. Bola com ele. Desisti.","comuna":"","profissao":"","canal":""},{"id":4,"name":"Leo e Oscar","age":37,"origin":"Equador","role":"ativo-vers","status":"pendente","eventDate":"","eventTime":"","next":"Próxima data","note":"Trio potencial com parceiro 44. Cara de safado. Tesão absurdo.","meetings":0,"sex":"","comuna":"","profissao":"","canal":""},{"id":5,"name":"Camilo","age":31,"origin":"Chile","role":"?","status":"arquivo","eventDate":"","eventTime":"","next":"Aguarda WhatsApp","note":"LINDO. Recém chegado. Vibe ciclista que aprecia o pôr do sol.","comuna":"","profissao":"","canal":""},{"id":6,"name":"Luis Caminhoneiro","age":46,"origin":"Chile","role":"?","status":"arquivo","eventDate":"","eventTime":"","next":"Provável semana 3 de Maio","note":"Vibe caminhoneiro urso de pint. Não bonito mas chama a atenção.","comuna":"","profissao":"","canal":""},{"id":7,"name":"Mario Diva","age":48,"origin":"Chile","role":"passivo","status":"arquivo","eventDate":"","eventTime":"","next":"Regar quando der vontade","note":"Diva com jijijiji. Chef gourmet de si mesmo. Temuco 640km. Entretenimento de qualidade.","comuna":"","profissao":"","canal":""},{"id":9,"name":"Arturo Lagos","age":45,"origin":"Chile","role":"versátil","status":"arquivo","eventDate":"2026-08-07","eventTime":"18:00","next":"Vou a Temuco","note":"Urso bonito de cara. Passaríamos fim de semana na casa dele. Agora Amizade.","meetings":0,"sex":"não","comuna":"","profissao":"","canal":""},{"id":11,"name":"Mario Saavedra","age":43,"origin":"Venezuela","role":"versátil","status":"arquivo","eventDate":"","eventTime":"","next":"Café","note":"Bonito, peludo, safado. Já sexualizada a conversa. Chato pra marcar data","comuna":"","profissao":"","canal":""},{"id":12,"name":"Andre","age":null,"origin":"Chile","role":"?","status":"arquivo","eventDate":"","eventTime":"","next":"Iniciar conversa","note":"Mandou foto em 10/05. Foto interessante (careca Prince William).","comuna":"","profissao":"","canal":""},{"id":13,"name":"William Marchant","age":35,"origin":"Chile","role":"ativo","status":"arquivo","eventDate":"","eventTime":"","next":"Vestiário / treino","note":"Puto em escala industrial. Cúmplice de putaria. Quero beijar selvagem, só isso.","comuna":"","profissao":"","canal":""},{"id":14,"name":"Alex Maffud","age":34,"origin":"Chile","role":"Passivo-versátil","status":"arquivo","eventDate":"","eventTime":"","next":"Revisar","note":"Baixinho peludo sorriso safado matador. Lesionado. Conversa aberta.","comuna":"","profissao":"","canal":""},{"id":15,"name":"Sebastián","age":34,"origin":"Chile","role":"passivo","status":"arquivo","eventDate":"","eventTime":"","next":"Observar treino","note":"LINDO. 1,90m. Peludo. Gigante gentil e tímido. Tem namorado.","comuna":"","profissao":"","canal":""},{"id":16,"name":"Orlando","age":36,"origin":"Chile","role":"passivo","status":"arquivo","eventDate":"","eventTime":"","next":"Observar treino","note":"Alex sem pelos. Em observação.","comuna":"","profissao":"","canal":""},{"id":17,"name":"Nico","age":32,"origin":"Chile","role":"ativo","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Voltando devagar. Resistiu antes, agora retorna. Provável desistência.","comuna":"","profissao":"","canal":""},{"id":18,"name":"Luis não Lucho","age":36,"origin":"Chile","role":"passivo-versátil","status":"arquivo","eventDate":"","eventTime":"","next":"Primeiro encontro","note":"Arredio, não quis sair do app. Mas interessante, ainda não emociona. Deu desculpa pra não ir.","comuna":"","profissao":"","canal":""},{"id":19,"name":"Erick","age":null,"origin":"","role":"passivo-versátil","status":"arquivo","eventDate":"","eventTime":"","next":"Engrenar conversa","note":"Primeiro contato rápido 12/05. LINDO. Absurdo. Delicioso. Quero e vou atrás.","comuna":"","profissao":"","canal":""},{"id":8,"name":"Miguel Bravo","age":34,"origin":"Venezuela","role":"passivo","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Tem parceiro. Quer putaria. Arquivado.","comuna":"","profissao":"","canal":""},{"id":10,"name":"Cristian","age":32,"origin":"Chile","role":"ativo-vers","status":"arquivo","eventDate":"","eventTime":"","next":"","note":"Scruff, vizinho da rua. Arquivado.","comuna":"","profissao":"","canal":""},{"id":20,"name":"Miguel Alarcón","age":34,"origin":"Chile","role":"Ativo-versátil","status":"arquivo","eventDate":"2026-05-20","eventTime":"17:30","next":"","note":"Inteligente, interessante. Lindo, gostoso, carinhoso. Quero","meetings":1,"sex":"não","comuna":"","profissao":"","canal":""},{"id":21,"name":"José Francisco","age":49,"origin":"Chile","role":"Passivo","status":"arquivo","eventDate":"","eventTime":"","next":"Confirmar encontro","note":"Falamos por telefone na 1ª vez. Quer o catálogo inteiro de putaria.","comuna":"","profissao":"","canal":""},{"id":22,"name":"Nachito","age":33,"origin":"Chile","role":"Passivo","status":"ativo","eventDate":"","eventTime":"","next":"Cinema + o que vier","note":"Se expressa com presença, não palavras. Intervalo de três meses sem contato. Retomamos contato depois de 3,5 meses. Saímos em 02/10.","meetings":4,"sex":"sim","comuna":"","profissao":"Analista financeiro","canal":""},{"id":23,"name":"Andy García","age":33,"origin":"Cuba","role":"Passivo","status":"arquivo","eventDate":"2026-05-22","eventTime":"17:00","next":"Provi","note":"Espirito venezuelano. Sexualiza mas se faz de puritano. Chato pra marcar data","comuna":"","profissao":"","canal":""},{"id":24,"name":"Sebastian Side","age":25,"origin":"Chile","role":"Side","status":"arquivo","eventDate":"2026-06-01","eventTime":"08:30","next":"Booking","note":"Pajas e oral, passar a noite. Ursinho delicioso e safado. Quero","comuna":"","profissao":"","canal":""},{"id":25,"name":"Javier Torres","age":37,"origin":"","role":"Passivo","status":"arquivo","eventDate":"","eventTime":"","next":"Metro Bellavista La Florida","note":"Submisso exigente pidão. Parece bonito. Cancelei por doença. Pedi remarcar","comuna":"","profissao":"","canal":""},{"id":26,"name":"Rodrigo Pavez","age":32,"origin":"Chile","role":"Passivo","status":"arquivo","eventDate":"","eventTime":"","next":"Café La Mom","note":"Parece interessante. Mas parece gordo demais. Vejamos o que prevalece. Confirmar","comuna":"","profissao":"","canal":""},{"id":27,"name":"Coke Silva","age":40,"origin":"Chile","role":"Passivo","status":"arquivo","eventDate":"","eventTime":"","next":"Café 2?","note":"Bonito não lindo, interessante. Gostoso","meetings":1,"sex":"não","comuna":"","profissao":"","canal":""},{"id":28,"name":"Heddy","age":45,"origin":"Chile","role":"Passivo","status":"arquivo","eventDate":"2026-05-28","eventTime":"20:30","next":"Encontro sexo","note":"Tudo menos penetração.","comuna":"","profissao":"","canal":""},{"id":29,"name":"Felipe Muñoz","age":33,"origin":"Chile","role":"Passivo versátil","status":"arquivo","eventDate":"2026-06-16","eventTime":"17:30","next":"Marcar","note":"Falamos do que buscamos, expectativas baixas, crescendo","comuna":"","profissao":"","canal":""},{"id":30,"name":"Antonio Sánchez","age":32,"origin":"Chile","role":"Ativo","status":"arquivo","eventDate":"","eventTime":"","next":"Se fudeu","note":"Bonito. Apressadinho. Cretino, idiota, iludido e surtado que se queimou sozinho.","comuna":"","profissao":"","canal":""},{"id":31,"name":"Gustavo Guzmán","age":43,"origin":"Chile","role":"Ativo-versátil","status":"arquivo","eventDate":"2026-07-15","eventTime":"18:30","next":"Marcar","note":"Masculino, maduro, inteligente. Ele investindo mais e mais depois que viu que não cobro presença. Amizade","meetings":0,"sex":"não","comuna":"","profissao":"","canal":""},{"id":32,"name":"Alex Sausa","age":43,"origin":"Chile","role":"Passivo-versátil","status":"arquivo","eventDate":"2026-06-10","eventTime":"18:30","next":"Marcar","note":"Inteligente, bonito, algo tímido, algo intimidado","comuna":"","profissao":"","canal":""},{"id":33,"name":"Diego Hernández","age":37,"origin":"Chile","role":"Passivo-versátil","status":"arquivo","eventDate":"","eventTime":"","next":"Esfriar","note":"Atração explosiva. Interessante. Bonito, mas muito gordo. Não quero mais.","meetings":2,"sex":"sim","comuna":"","profissao":"","canal":""},{"id":34,"name":"Isaac Navarrete","age":30,"origin":"Chile","role":"Passivo","status":"ativo","eventDate":"","eventTime":"","next":"Café","note":"Ñuñoa, profe inglés, interesante, sorriso bonito, explosivo e responsivo na cama. Contato retomado em 09/10","meetings":1,"sex":"sim","comuna":"Ñuñoa","profissao":"Professor de inglês","canal":""},{"id":35,"name":"Seba Moreno","age":30,"origin":"Chile","role":"Versátil","status":"arquivo","eventDate":"2026-09-30","eventTime":"20:00","next":"Fim em 30/09/26","note":"Foram 3 meses bons, de cotidiano, de momentos felizes. Cansei do egocentrismo vitimista. Quis acabar com dignidade, ele preferiu o show.","meetings":8,"sex":"sim","comuna":"","profissao":"","canal":""},{"id":36,"name":"Marlon Barrios","age":30,"origin":"Chile","role":"Versátil","status":"arquivo","eventDate":"","eventTime":"","next":"Observar","note":"Macul. Não excepcional em nada, mas pontua. Meio chuchu. Ressuscitou. Mais ou menos","comuna":"Macul","profissao":"","canal":""},{"id":37,"name":"Yercko Talamilla","age":26,"origin":"Chile","role":"Passivo","status":"arquivo","eventDate":"","eventTime":"","next":"Marcar","note":"Lindo. Aparece esporadicamente. Provavelmente só sexo. Ok.","comuna":"","profissao":"","canal":""},{"id":38,"name":"Juan Carlos","age":29,"origin":"Chile","role":"Passivo","status":"arquivo","eventDate":"2026-06-29","eventTime":"18:30","next":"Plaza Vespucio","note":"Faminto gostosíssimo apresssado, agora revelando ternura. Lindo de cara e corpo.","meetings":1,"sex":"não","comuna":"","profissao":"","canal":""},{"id":39,"name":"Sebastián Valdivia","age":31,"origin":"Chile","role":"Passivo","status":"arquivo","eventDate":"","eventTime":"","next":"Viajar","note":"Valdivia. Noivo de Nico, lindos, deliciosos. Microbiologista. Têm trios eventuais. Quero","meetings":0,"sex":"","comuna":"","profissao":"","canal":""},{"id":40,"name":"Roni Matallana","age":31,"origin":"Venezuela","role":"Versátil","status":"arquivo","eventDate":"2026-07-01","eventTime":"19:30","next":"La Mom","note":"Devagar e paciente. Quer agradar. Houve o encontro. Não me atrai. Bonzinho, parecia gostar de mim. Mas beija mal, o cheiro não bate. Não rola.","meetings":1,"sex":"não","comuna":"","profissao":"","canal":""},{"id":41,"name":"Ian González","age":32,"origin":"Chile","role":"Versátil-passivo","status":"arquivo","eventDate":"2026-06-25","eventTime":"19:00","next":"Marcar","note":"Maipu. Dentista e professor. Muito bonito, inteligente, interessante, bem humorado. Excelente impressão.","comuna":"Maipú","profissao":"Dentista e professor","canal":""},{"id":42,"name":"Rodrigo Concha","age":27,"origin":"Chile","role":"Versátil","status":"arquivo","eventDate":"2026-07-15","eventTime":"18:30","next":"Marcar","note":"Bonito, houve ideia de encontro em Abril que não aconteceu. Nova tentativa.","meetings":0,"sex":"","comuna":"","profissao":"","canal":""},{"id":43,"name":"Arturo Ramirez","age":38,"origin":"Chile","role":"Passivo","status":"arquivo","eventDate":"","eventTime":"","next":"Reagendar","note":"Ansioso demais, nunca teve namorado. Veremos se passa do primero café.","meetings":0,"sex":"","comuna":"","profissao":"","canal":"WhatsApp"},{"id":44,"name":"Rodrigo Videla","age":44,"origin":"Chile","role":"Versátil","status":"novo","eventDate":"","eventTime":"","next":"Marcar café","note":"Professor, conversa oscila. Ora ele é solto, ora se retrai. Inteligente, articulado. Falta faísca. Agora é mais um corpo delicioso que algo completo. Esfriando","meetings":0,"sex":"","comuna":"","profissao":"Coordenador universitário e professor","canal":"WhatsApp"},{"id":45,"name":"Chris Sasson","age":36,"origin":"Venezuela","role":"Passivo","status":"novo","eventDate":"","eventTime":"","next":"Marcar café","note":"Empreendedor, bonito, interessante, safado. Bem viajado. Mas acho venezuelanamente apaionadinho demais já no chat. Não sei se haverá encontro.","meetings":0,"sex":"","comuna":"","profissao":"Empreendedor","canal":"WhatsApp"},{"id":46,"name":"José Ignácio","age":39,"origin":"Chile","role":"Ativo","status":"arquivo","eventDate":"2026-10-15","eventTime":"18:45","next":"Marcar café via Scruff","note":"Interessante, muito bonito, sexy. Houve química forte no primeiro chat. E não apareceu mais. Eu já não vou mais ao Scruff, então morreu","meetings":0,"sex":"","comuna":"","profissao":"","canal":""},{"id":47,"name":"Bruno Safado","age":31,"origin":"Chile","role":"Versátil","status":"arquivo","eventDate":"","eventTime":"","next":"Marcar cafe vía Grindr","note":"Apareceu rápido, quente, lindo no chat. Quis encontro pro dia seguinte. E deu ghosting.","meetings":0,"sex":"","comuna":"","profissao":"","canal":""},{"id":48,"name":"Pancho Fuentealba","age":32,"origin":"Chile","role":"Passivo","status":"novo","eventDate":"2026-10-20","eventTime":"19:00","next":"Marcar café","note":"Advogado. Bem bonito. Começou a ir por caminho sexual e depois veio pra algo mais como gosto.","meetings":0,"sex":"","comuna":"","profissao":"Advogado","canal":"WhatsApp"},{"id":49,"name":"Hernán Leal","age":38,"origin":"Chile","role":"Passivo","status":"novo","eventDate":"2026-10-23","eventTime":"19:00","next":"Marcar café","note":"Empreendedor, lindo, responde bem na conversa. Eu gostaria de um pouco mais de iniciativa, mas vamos ok até aqui","meetings":0,"sex":"","comuna":"","profissao":"Empreendedor","canal":"WhatsApp"},{"id":50,"name":"Miguel Escobar","age":45,"origin":"Chile","role":"Passivo","status":"novo","eventDate":"2026-10-17","eventTime":"17:00","next":"Confirmar café","note":"Ger. Logística. Gay recente. Diz ter saído com 2 homens apenas. A coisa anda, tem algo de interessante que não sei nomear.","meetings":0,"sex":"","comuna":"","profissao":"Gerente de logística","canal":"WhatsApp"},{"id":51,"name":"Javier Cortés","age":38,"origin":"Chile","role":"Versátil","status":"novo","eventDate":"2026-10-26","eventTime":"19:00","next":"Propor café","note":"Professor, alto astral, conversa em tom estável, bilteral, sem frescura, sem sacanagem. Quero conhecer.","meetings":0,"sex":"","comuna":"","profissao":"Professor universitário","canal":"WhatsApp"},{"id":52,"name":"Victor Hugo","age":51,"origin":"Peru","role":"Ativo","status":"novo","eventDate":"2026-10-16","eventTime":"19:30","next":"Estação Los Leones","note":"É professor, caloroso, bonito, carinhoso sem ser meloso, gostoso de conversar, com um jeito interiorano. Foi fresco pra marcar a porra do encontro. Veremos como será a coisa.","meetings":0,"sex":"","comuna":"","profissao":"Professor universitário","canal":"WhatsApp"},{"id":53,"name":"Alex Godoy","age":37,"origin":"Chile","role":"Passivo versátil","status":"novo","eventDate":"2026-10-21","eventTime":"19:00","next":"Propor café","note":"Comprador, tem calor na conversa, tem carinho, recebe as palavras com ternura e expressa gratidão. Não é carente. Mas ainda não me inspira.","meetings":0,"sex":"","comuna":"","profissao":"Comprador nas Forças Armadas","canal":"WhatsApp"},{"id":54,"name":"Alex Araneda","age":47,"origin":"Chile","role":"Passivo","status":"novo","eventDate":"2026-10-19","eventTime":"19:00","next":"Propor café","note":"Neurocientista, excelente na conversa, maduro, transparente, sem jogos. A coisa aqui tá avançando de verdade. 3,5 horas de chamada telefônica.","meetings":0,"sex":"","comuna":"","profissao":"Neurocientista (PhD)","canal":"WhatsApp"},{"id":55,"name":"Luís Vera","age":34,"origin":"Chile","role":"Passivo","status":"novo","eventDate":"2026-10-15","eventTime":"18:30","next":"Estação Los Leones","note":"Advogado. Conversa boa, gostosa, bilateral, inteligente, ágil, com humor e malícia. Gosta e quer absolutamente ser dominado.","meetings":0,"sex":"","comuna":"","profissao":"Advogado","canal":""},{"id":56,"name":"Manuel Contreras","age":33,"origin":"Chile","role":"Passivo","status":"novo","eventDate":"2026-10-18","eventTime":"16:30","next":"Propor café","note":"Empreendedor, Muito inteligente, esperto, seguro, maduro e de uma ternura deliciosa. Eu já disse que ele é lindo pra caralho? Quero. Muito.","meetings":0,"sex":"","comuna":"","profissao":"Empreendedor","canal":"WhatsApp"}];
+
+const FILTERS = ["todos","ativo","agendado","pendente","novo","limbo","manutenção","observação","experimento","arquivo"];
+const FILTER_LABELS = { arquivo:"arquivo morto" };
+let people = [], activeFilter = "todos", editingId = null;
+
+function load() {
+  const saved = localStorage.getItem("arm_v3");
+  people = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(SEED));
+  // migração: remove "cat" e garante os campos novos (comuna, profissao)
+  const seedById = {}; SEED.forEach(x => seedById[x.id] = x);
+  let dirty = false;
+  people.forEach(p => {
+    if ("cat" in p) { if (p.cat==="arquivo") p.status="arquivo"; delete p.cat; dirty = true; }
+    const sd = seedById[p.id];
+    if (p.comuna===undefined)    { p.comuna    = sd ? (sd.comuna||"")    : ""; dirty = true; }
+    if (p.profissao===undefined) { p.profissao = sd ? (sd.profissao||"") : ""; dirty = true; }
+    if (p.canal===undefined) {
+      const CH = {W:"WhatsApp", S:"Scruff", G:"Grindr", T:"Tinder"};
+      const mc = (p.note||"").match(/^([WSGT])\s+/);
+      if (mc) { p.canal = CH[mc[1]]; p.note = p.note.slice(mc[0].length); }
+      else p.canal = sd ? (sd.canal||"") : "";
+      dirty = true;
+    }
+  });
+  if (dirty) save();
+}
+function save() { localStorage.setItem("arm_v3", JSON.stringify(people)); }
+function nextId() { return people.length ? Math.max(...people.map(p=>p.id))+1 : 1; }
+function initials(n) { return n.slice(0,2).toUpperCase(); }
+function colorFor(p) {
+  if (p.status==="arquivo") return { bg:"var(--gray-bg)", text:"var(--gray)" };
+  return { bg:"var(--green-bg)", text:"var(--green)" };
+}
+
+function parseEventDate(p) {
+  if (!p.eventDate) return null;
+  const d = new Date(p.eventDate + (p.eventTime ? "T" + p.eventTime : "T00:00"));
+  return isNaN(d) ? null : d;
+}
+
+function formatEventDisplay(p) {
+  const d = parseEventDate(p);
+  if (!d) return null;
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
+  const eDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const days = Math.round((eDay - today) / 86400000);
+  const timeStr = p.eventTime ? ` ${p.eventTime}` : "";
+  const dow = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"][d.getDay()];
+  const dateStr = `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`;
+  if (days < 0) return { label: `${dateStr}${timeStr} (passou)`, past: true };
+  if (days === 0) return { label: `Hoje${timeStr}`, today: true };
+  if (days === 1) return { label: `Amanhã${timeStr}`, soon: true };
+  if (days <= 6) return { label: `${dow} ${dateStr}${timeStr}`, soon: true };
+  return { label: `${dow} ${dateStr}${timeStr}`, future: true };
+}
+
+function renderDashboard() {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
+  const in7 = new Date(today); in7.setDate(today.getDate()+7);
+
+  const active = people.filter(p => p.status !== "arquivo");
+  const withDates = active.filter(p => parseEventDate(p)).sort((a,b) => parseEventDate(a)-parseEventDate(b));
+
+  const todayEvents   = withDates.filter(p => { const d=parseEventDate(p); const e=new Date(d.getFullYear(),d.getMonth(),d.getDate()); return e.getTime()===today.getTime(); });
+  const tomorrowEvents= withDates.filter(p => { const d=parseEventDate(p); const e=new Date(d.getFullYear(),d.getMonth(),d.getDate()); return e.getTime()===tomorrow.getTime(); });
+  const weekEvents    = withDates.filter(p => { const d=parseEventDate(p); const e=new Date(d.getFullYear(),d.getMonth(),d.getDate()); return e>tomorrow && e<=in7; });
+  const stale         = active.filter(p => !parseEventDate(p) && ["ativo","agendado","pendente"].includes(p.status));
+
+  function itemHTML(p) {
+    const ev = formatEventDisplay(p);
+    const timeStr = ev ? ` · ${ev.label}` : "";
+    return `<div class="dash-item"><div class="dash-dot" style="background:${colorFor(p).text}"></div><span class="dash-name">${p.name}</span><span class="dash-when">${timeStr}${p.next ? " — " + p.next : ""}</span></div>`;
+  }
+
+  let html = `<div class="dash-title">Dashboard</div>`;
+
+  if (todayEvents.length) {
+    html += `<div class="dash-section"><div class="dash-label">Hoje</div><div class="dash-items">${todayEvents.map(itemHTML).join("")}</div></div>`;
+    if (tomorrowEvents.length || weekEvents.length || stale.length) html += `<div class="dash-divider"></div>`;
+  }
+  if (tomorrowEvents.length) {
+    html += `<div class="dash-section"><div class="dash-label">Amanhã</div><div class="dash-items">${tomorrowEvents.map(itemHTML).join("")}</div></div>`;
+    if (weekEvents.length || stale.length) html += `<div class="dash-divider"></div>`;
+  }
+  if (weekEvents.length) {
+    html += `<div class="dash-section"><div class="dash-label">Esta semana</div><div class="dash-items">${weekEvents.map(itemHTML).join("")}</div></div>`;
+    if (stale.length) html += `<div class="dash-divider"></div>`;
+  }
+  if (stale.length) {
+    html += `<div class="dash-section"><div class="dash-label">Sem data — acompanhar</div><div class="dash-items">${stale.map(p=>`<div class="dash-item"><div class="dash-dot" style="background:var(--text3)"></div><span class="dash-name">${p.name}</span><span class="dash-when">${p.next ? " · " + p.next : ""}</span></div>`).join("")}</div></div>`;
+  }
+  if (!todayEvents.length && !tomorrowEvents.length && !weekEvents.length && !stale.length) {
+    html += `<span class="dash-empty">Pipeline limpo por enquanto.</span>`;
+  }
+
+  document.getElementById("dashboard").innerHTML = html;
+}
+
+function renderStats() {
+  const a = people.filter(p=>["ativo","agendado"].includes(p.status)).length;
+  const b = people.filter(p=>["pendente","novo","limbo"].includes(p.status)).length;
+  const d = people.filter(p=>p.status==="arquivo").length;
+  document.getElementById("stats").innerHTML =
+    [{n:a,l:"ativos"},{n:b,l:"em aberto"},{n:d,l:"arquivo"}]
+    .map(x=>`<div class="stat"><div class="stat-n">${x.n}</div><div class="stat-l">${x.l}</div></div>`).join("");
+}
+
+function renderFilters() {
+  document.getElementById("filters").innerHTML = FILTERS.map(f=>
+    `<button class="filter-btn ${f===activeFilter?"active":""}" onclick="setFilter('${f}')">${FILTER_LABELS[f]||f}</button>`
+  ).join("");
+}
+
+function setFilter(f) { activeFilter=f; render(); }
+
+function renderCard(p) {
+  const c  = colorFor(p);
+  const sc = STATUS_COLOR[p.status] || STATUS_COLOR["manutenção"];
+  const ar = p.status==="arquivo";
+  const ev = formatEventDisplay(p);
+  const hasEvent = ev && !ev.past;
+  return `<div class="card ${ar?"archived":""} ${hasEvent?"has-event":""}">
+    <div class="card-top">
+      <div class="avatar" style="background:${c.bg};color:${c.text}">${initials(p.name)}</div>
+      <span style="display:flex;gap:4px;align-items:center">${p.canal?`<span class="badge" style="background:var(--gray-bg);color:var(--gray)">${p.canal}</span>`:""}<span class="badge" style="background:${sc.bg};color:${sc.text}">${p.status}</span></span>
+    </div>
+    <div class="card-name">${p.name}</div>
+    <div class="card-meta">${p.age?p.age+" · ":""}${p.origin||""} · ${p.role||""}</div>
+    ${(p.comuna||p.profissao) ? `<div class="card-meta">${[p.comuna?"📍 "+p.comuna:"", p.profissao?"💼 "+p.profissao:""].filter(Boolean).join(" · ")}</div>` : ""}
+    <div class="card-note">${p.note||""}</div>
+    ${(p.meetings||p.sex) ? `<div class="card-note" style="display:flex;gap:10px;margin-top:5px;border-top:none;padding-top:0">${p.meetings!=null&&p.meetings>0?`<span>🤝 ${p.meetings} encontro${p.meetings===1?"":"s"}</span>`:""}${p.sex?`<span>${p.sex==="sim"?"❤️ Sexo: sim":"○ Sexo: não"}</span>`:""}</div>` : ""}
+    ${ev ? `<div class="card-event">📅 ${ev.label}</div>` : ""}
+    ${p.next && !ev ? `<div class="card-next-text">→ ${p.next}</div>` : ""}
+    ${p.next && ev ? `<div class="card-next-text">${p.next}</div>` : ""}
+    <div class="card-actions">
+      <button class="card-btn" onclick="openModal(${p.id})">Editar</button>
+      <button class="card-btn" onclick="archiveContact(${p.id})">${ar?"Restaurar":"Arquivar"}</button>
+      <button class="card-btn danger" onclick="deleteContact(${p.id})">Apagar</button>
+    </div>
+  </div>`;
+}
+
+function render() {
+  renderDashboard();
+  renderStats();
+  renderFilters();
+  const filtered = activeFilter==="todos"
+    ? people.filter(p=>p.status!=="arquivo")
+    : people.filter(p=>p.status===activeFilter);
+  const sorted = [...filtered].sort((a,b)=>{
+    const da=parseEventDate(a), db=parseEventDate(b);
+    if(da&&db) return da-db;
+    if(da) return -1;
+    if(db) return 1;
+    return 0;
+  });
+  document.getElementById("board").innerHTML = sorted.length
+    ? `<div class="grid">${sorted.map(renderCard).join("")}</div>`
+    : `<div class="empty">Nenhum contato aqui.</div>`;
+}
+
+function openModal(id) {
+  editingId = id||null;
+  document.getElementById("modal-title").textContent = id?"Editar":"Novo contato";
+  if (id) {
+    const p = people.find(x=>x.id===id);
+    document.getElementById("f-name").value       = p.name||"";
+    document.getElementById("f-age").value        = p.age||"";
+    document.getElementById("f-origin").value     = p.origin||"";
+    document.getElementById("f-role").value       = p.role||"";
+    document.getElementById("f-comuna").value     = p.comuna||"";
+    document.getElementById("f-prof").value       = p.profissao||"";
+    document.getElementById("f-canal").value      = p.canal||"";
+    document.getElementById("f-status").value     = p.status||"ativo";
+    document.getElementById("f-event-date").value = p.eventDate||"";
+    document.getElementById("f-event-time").value = p.eventTime||"";
+    document.getElementById("f-next").value       = p.next||"";
+    document.getElementById("f-note").value       = p.note||"";
+    document.getElementById("f-meetings").value   = p.meetings!=null?p.meetings:"";
+    document.getElementById("f-sex").value        = p.sex||"";
+  } else {
+    ["f-name","f-age","f-origin","f-role","f-comuna","f-prof","f-event-date","f-event-time","f-next","f-note","f-meetings"].forEach(i=>document.getElementById(i).value="");
+    document.getElementById("f-sex").value="";
+    document.getElementById("f-canal").value="";
+    document.getElementById("f-status").value="novo";
+  }
+  document.getElementById("overlay").classList.add("open");
+}
+
+function closeModal() { document.getElementById("overlay").classList.remove("open"); editingId=null; }
+
+function saveContact() {
+  const name = document.getElementById("f-name").value.trim();
+  if (!name) { alert("Nome é obrigatório."); return; }
+  const data = {
+    name, age: parseInt(document.getElementById("f-age").value)||null,
+    origin:    document.getElementById("f-origin").value.trim(),
+    role:      document.getElementById("f-role").value.trim(),
+    comuna:    document.getElementById("f-comuna").value.trim(),
+    profissao: document.getElementById("f-prof").value.trim(),
+    canal:     document.getElementById("f-canal").value,
+    status:    document.getElementById("f-status").value,
+    eventDate: document.getElementById("f-event-date").value,
+    eventTime: document.getElementById("f-event-time").value,
+    next:      document.getElementById("f-next").value.trim(),
+    note:      document.getElementById("f-note").value.trim(),
+    meetings:  parseInt(document.getElementById("f-meetings").value)||0,
+    sex:       document.getElementById("f-sex").value,
+  };
+  if (editingId) { const i=people.findIndex(p=>p.id===editingId); people[i]={...people[i],...data}; }
+  else people.push({id:nextId(),...data});
+  save(); closeModal(); render();
+}
+
+function archiveContact(id) {
+  const p=people.find(x=>x.id===id); if(!p) return;
+  p.status = p.status==="arquivo" ? "ativo" : "arquivo";
+  save(); render();
+}
+
+function deleteContact(id) {
+  if(!confirm("Apagar definitivamente?")) return;
+  people=people.filter(p=>p.id!==id); save(); render();
+}
+
+function exportHTML() {
+  const snapshot = JSON.stringify(people);
+  const html = document.documentElement.outerHTML.replace(
+    /const SEED = \[.*?\];/s,
+    "const SEED = " + snapshot + ";"
+  );
+  const blob = new Blob([html],{type:"text/html"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "ARM_" + new Date().toISOString().slice(0,10) + ".html";
+  a.click();
+}
+
+document.getElementById("overlay").addEventListener("click",function(e){if(e.target===this)closeModal();});
+load(); render();
+</script>
+
+
+</body></html>
